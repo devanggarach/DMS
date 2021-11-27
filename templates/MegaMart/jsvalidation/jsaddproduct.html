@@ -1,0 +1,317 @@
+<style type="text/css">
+#spicostmesg,#spihsncodemesg,#spimrpmesg,#spidiscountmesg0,#spiquantitymsg,#spiexpirydtmsg,#spipackingdtmsg,#spisubmitmsg,#spisellingpricemesg{color: red;
+    font-size: 12px;
+  }
+</style>
+
+
+
+
+<script type="text/javascript">
+var GsubmitSaveproduct = {iname:0,ihsncode:0,icost:0,imrp:0,isellingprice:0,idiscount:1,ipackingdt:0,iexpirydt:0,iquantity:0};
+var Gtoday = new Date();
+    Gtoday.setHours(0,0,0,0);
+
+
+function spCheckName() {
+  var vname = document.getElementById("spiname");
+  var sname = vname.value.split(" ");
+  var pname="";
+  for (s in sname) {
+    pname +=sname[s].charAt(0).toUpperCase()+sname[s].slice(1)+" ";
+  }
+  vname.value = pname.trim();
+  GsubmitSaveproduct["iname"] = 1;
+}
+
+
+function spCheckHSNCode() {
+  var vhsncode = document.getElementById("spihsncode").value;
+  alert(vhsncode);
+  alert(GproductListhsncode.includes(vhsncode));
+  if (GproductListhsncode.includes(vhsncode)) {
+    alert('if');
+    spihsncodemesg.innerHTML ="";
+    GsubmitSaveproduct["ihsncode"] = 1;
+  }else{
+    alert('else');
+    spihsncodemesg.innerHTML ="Select HSN Code from List !...";
+    GsubmitSaveproduct["ihsncode"] = 0;
+  }
+  
+}
+
+
+function spCheckCost() {
+  var vicost = document.getElementById("spicost").value;
+  if (!isNaN(vicost)) {
+    if (vicost<0 || (vicost.charAt(0))=="-"){
+      spicostmesg.innerHTML ="Enter a positive number !..." ;
+      GsubmitSaveproduct["icost"] = 0;
+    }else{
+      spicostmesg.innerHTML ="" ;
+      GsubmitSaveproduct["icost"] = 1;
+    }
+  }else{
+    spicostmesg.innerHTML ="Please provide valid input for Cost !..." ;
+    GsubmitSaveproduct["icost"] = 0;
+  }
+}
+
+
+function spCheckMRP() {
+  var vmrp = document.getElementById("spimrp").value;
+  if (!isNaN(vmrp)) {
+    if (vmrp<0 || (vmrp.charAt(0))=="-"){
+      spimrpmesg.innerHTML ="Enter a positive number !..." ;
+      GsubmitSaveproduct["imrp"] = 0;
+    }else{
+      spimrpmesg.innerHTML ="" ;
+      GsubmitSaveproduct["imrp"] = 1;
+    }
+  }else{
+    spimrpmesg.innerHTML ="Please provide valid input for MRP. !..." ;
+    GsubmitSaveproduct["imrp"] = 0;
+  }
+}
+
+
+function spCheckSellingPrice() {
+  var vsellingprice = document.getElementById("spisellingprice").value;
+  if (!isNaN(vsellingprice)) {
+    if (vsellingprice<0 || (vsellingprice.charAt(0))=="-"){
+      spisellingpricemesg.innerHTML ="Enter a positive number !..." ;
+      GsubmitSaveproduct["isellingprice"] = 0;
+    }else{
+      spisellingpricemesg.innerHTML ="" ;
+      GsubmitSaveproduct["isellingprice"] = 1;
+    }
+  }else{
+    spisellingpricemesg.innerHTML ="Please provide valid input for Selling price. !..." ;
+    GsubmitSaveproduct["isellingprice"] = 0;
+  }
+}
+
+
+function spCheckDiscount() {
+  var vgst = document.getElementById("ispgst").value;
+  var vcost = document.getElementById("spicost").value;
+  var vmrp = document.getElementById("spimrp").value;
+  var vsellingprice = document.getElementById("spisellingprice").value;
+  var vdiscount = document.getElementById("spidiscount").value;
+  
+  var gstammount= vsellingprice*vgst/(100+vgst)*10;
+
+  // var gstammount = (vsellingprice - (vsellingprice/("1."+vgst))).toFixed(2);
+  var profit = (vsellingprice - vcost - gstammount).toFixed(2);
+  var netprice = vsellingprice - gstammount;
+// 110/1.10,1.18
+  var discount = ((vmrp - vsellingprice - gstammount)/vmrp)*100;
+  // var discount = ((vmrp - vsellingprice)/vmrp)*100;
+  spidiscount.value =discount.toFixed(2);
+
+  var pdiscount = (vmrp - (vmrp * vdiscount / 100)).toFixed(2);
+  // var profit = (pdiscount - vcost).toFixed(2);
+
+
+
+  var temp=false;
+  if (!isNaN(vdiscount)) {
+  if (vdiscount<0 || (vdiscount.charAt(0))=="-"){
+    spidiscountmesg0.innerHTML ="Enter a positive number !..." ;
+    GsubmitSaveproduct["idiscount"] = 0;
+    spidiscountmesg.style.display = "none";
+  }else{
+    spidiscountmesg0.innerHTML ="" ;
+    GsubmitSaveproduct["idiscount"] = 1;
+    if (vdiscount>100) {
+      spidiscountmesg0.innerHTML ="Enter a Discount 0 to 100 ." ;
+      GsubmitSaveproduct["idiscount"] = 0;
+      spidiscountmesg.style.display = "none";
+    }else{
+      temp=true;
+    }
+    
+  }
+  }else{
+    spidiscountmesg0.innerHTML ="Please provide valid input  !..." ;
+    GsubmitSaveproduct["idiscount"] = 0;
+    spidiscountmesg.style.display = "none";
+  }
+
+  if (temp){
+  spidiscountmesg.style.display = "block";
+  if (parseFloat(netprice) > parseFloat(vcost)){
+    spidiscountmesg1.style.cssText = "color: blue;";
+    spidiscountmesg1.innerHTML = gstammount;
+
+    spidiscountmesg2.style.cssText = "background-color: green; color: #D4EFDF";
+    spidiscountmesg2.innerHTML = "&ensp;<i class='far fa-smile'></i>&ensp; Profit: &ensp; "+profit+"&ensp;";
+  }else if(parseFloat(netprice) == parseFloat(vcost)){
+    spidiscountmesg1.style.cssText = "color: blue;";
+    spidiscountmesg1.innerHTML = gstammount;
+
+    spidiscountmesg2.style.cssText = "background-color: orange; color: #FDEBD0";
+    spidiscountmesg2.innerHTML = "&ensp;<i class='far fa-meh'></i>&ensp; Cost: &ensp; "+profit+"&ensp;";
+  }else{
+    spidiscountmesg1.style.cssText = "color: blue;";
+    spidiscountmesg1.innerHTML = gstammount;
+
+    spidiscountmesg2.style.cssText = "background-color: red; color: #FADBD8";
+    spidiscountmesg2.innerHTML = "&ensp;<i class='far fa-frown'></i>&ensp; Loss: &ensp;"+profit+"&ensp;";
+  }}
+}
+
+
+function validDate(vdate){
+  var ListofDays = [31,28,31,30,31,30,31,31,30,31,30,31];
+  var pattern = /^([0-9]{2})-([0-9]{2})-([0-9]{4})$/;
+    if (vdate == null || vdate == "" || !pattern.test(vdate)) {
+        return "Invalid date format!";
+    }else{
+      var sdate = vdate.split('-');
+      var dd = parseInt(sdate[0]);
+      var mm  = parseInt(sdate[1]);
+      var yy = parseInt(sdate[2]);
+
+      if (mm>0 && mm<=12 && mm!=2){
+        if (dd>ListofDays[mm-1] ||dd<1){
+          return "Invalid Day!";
+        }else{
+          return "";
+        }
+      }else if(mm==2){
+        if (yy % 4 == 0) {
+          if (dd>29||dd<1){
+            return "Invalid Day!";
+          }else{
+            return "";
+          }
+        }else{
+          if (dd>28||dd<1){
+            return "Invalid Day!";
+          }else{
+            return "";
+          }
+        }
+      }else{
+        return "Invalid Month!";
+      }
+    } 
+}
+
+function spCheckPackingdt() {
+  var vpackingdt = document.getElementById("spipackingdt").value;
+  var valid = validDate(vpackingdt);
+  if (valid == "") {
+    var sdate = vpackingdt.split('-');
+    var exdate = new Date(sdate[2],sdate[1]-1,sdate[0]);
+    if (exdate>Gtoday) {
+      spipackingdtmsg.innerHTML = "Invalid packing date !.. ";
+      GsubmitSaveproduct["ipackingdt"] = 0;
+    }else{
+      spipackingdtmsg.innerHTML = valid;
+      GsubmitSaveproduct["ipackingdt"] = 1;
+    }
+    
+  }else{
+    GsubmitSaveproduct["ipackingdt"] = 0;
+    spipackingdtmsg.innerHTML = valid;
+  }
+}
+
+
+function spCheckExpirydt() {
+  var vexpirydt = document.getElementById("spiexpirydt").value;
+  var valid = validDate(vexpirydt);
+  if (valid == "") {
+    var sdate = vexpirydt.split('-');
+    var exdate = new Date(sdate[2],sdate[1]-1,sdate[0]);
+    if (exdate<=Gtoday) {
+      spiexpirydtmsg.innerHTML = "Product is alreay expired";
+      GsubmitSaveproduct["iexpirydt"] = 0;
+    }else{
+      spiexpirydtmsg.innerHTML = valid;
+      GsubmitSaveproduct["iexpirydt"] = 1;
+    }
+    
+  }else{
+    GsubmitSaveproduct["iexpirydt"] = 0;
+    spiexpirydtmsg.innerHTML = valid;
+  }
+
+
+  
+}
+
+
+function spCheckQuantity() {
+  var vquantity = document.getElementById("spiquantity").value;
+  if (!isNaN(vquantity)) {
+    if (vquantity<0 || (vquantity.charAt(0))=="-"){
+      spiquantitymsg.innerHTML ="Enter a Positive number !..." ;
+      GsubmitSaveproduct["iquantity"] = 0;
+    }else{
+      if (!vquantity.includes(".") && vquantity!=0) {
+        spiquantitymsg.innerHTML ="" ;
+        GsubmitSaveproduct["iquantity"] = 1;
+      }else{
+        spiquantitymsg.innerHTML ="Enter a Natural number !...";
+        GsubmitSaveproduct["iquantity"] = 0;
+      }
+    }
+  }else{
+    spiquantitymsg.innerHTML ="Please provide valid input for Quantity !...";
+    GsubmitSaveproduct["iquantity"] = 0;
+  }
+}
+
+
+function cancelSaveproduct() {
+  spicostmesg.innerHTML ="";
+  spimrpmesg.innerHTML ="";
+  spisellingpricemesg.innerHTML ="";
+  spicostmesg.innerHTML ="";
+  spidiscountmesg.style.display = "none";
+  ihsninfo.style.display = "none";
+  ihsncardlink.style.display = "none";
+  spidiscountmesg0.innerHTML ="";
+  spidiscountmesg1.innerHTML ="";
+  spidiscountmesg2.innerHTML ="";
+  spipackingdtmsg.innerHTML ="";
+  spiexpirydtmsg.innerHTML ="";
+  spiquantitymsg.innerHTML ="";
+  dpisubmitmsg.innerHTML ="";
+  spihsncodemesg.innerHTML ="";
+
+  for (i in GsubmitSaveproduct) {
+    GsubmitSaveproduct[i] = 0;
+  }
+}
+
+
+function submitSaveproduct() {
+  // spCheckHSNCode();
+  var submit=0;
+  var dpisubmitmsg="Enter: &ensp;";
+  for (i in GsubmitSaveproduct) {
+    submit += GsubmitSaveproduct[i];
+    if (GsubmitSaveproduct[i]==0) {
+      dpisubmitmsg +=i.slice(1)+", &nbsp;";
+    }
+    
+  }
+  if (submit == 9) {
+    // alert(submit+" submit");
+    return true;
+  }else{
+    // alert(submit+" no submit");
+    spisubmitmsg.innerHTML =dpisubmitmsg;
+    return false;
+  }
+  
+  
+}
+
+
+</script>

@@ -1,0 +1,176 @@
+{% extends 'MegaMart/navbar/navigation.html' %}
+
+{% block content %}
+{% load mathfilters %}
+<div class="main-panel">
+          <div class="content-wrapper">
+            <div class="row">
+			         <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <!-- <div class="template-demo">
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button"
+                                id="spfilter" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false"> Filter Products </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                          <a class="dropdown-item" href="../showproduct">All Products</a>
+                          <a class="dropdown-item" href="../showproductsingle">Single Products</a>
+                        </div>
+                      </div>
+                    <div class="dropdown">
+                        <button class="btn btn-info dropdown-toggle" type="button"
+                                id="spshort" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false"> Short Products</button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton6">
+                          <h6 class="dropdown-header">Settings</h6>
+                          <a class="dropdown-item" href="#">Action</a>
+                          <a class="dropdown-item" href="#">Another action</a>
+                          <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                      </div>
+                    </div> -->
+                    <div class="template-demo">
+                      <div class="row">
+                        <div class="col-md-6">
+                            <b>All Products</b>
+                        </div>
+                        <div class="col-md-6" align="right">
+                            Search <input type="text" name="search" id="">    
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+<!--                    {% for all_product in Tall_products %}-->
+<!--                      {{all_product.pname}}=-->
+<!--                    {% endfor %}-->
+<!--                    <h4 class="card-title"></h4>-->
+                    <!-- <p class="card-description"> Add class <code>.table-bordered</code> </p> -->
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th> No. </th>
+                          <th> Name </th>
+                          <th> Qrcode </th>
+                          <th> Stock </th>
+                          <th> Cost </th>
+                          <th> MRP </th>
+                          <th> Discount</th>
+                          <th> Packing Date</th>
+                          <th> Expiry Date</th>
+                        </tr>
+                      </thead>
+
+                      
+                      <tbody>
+                      	{% for all_product in Tall_products %}
+                        <tr>
+                          <td> {{all_product.pid}} </td>
+                          <td> {{all_product.pname}} </td>
+                          <td> {{all_product.pqrcode}} </td>
+                          <td width="25%">
+                            {{all_product.pquantity}}&nbsp;/&nbsp;{{all_product.pstock}}<!-- <b style="margin: 35%"></b> -->
+                            <div class="progress">
+                          	{% if all_product.pstock != 0 %}
+                              {% with sprog=all_product.pquantity|div:all_product.pstock|mul:100 %}
+                              {% if sprog >= 95 %}
+                                <div class="progress-bar bg-info progress-bar-animated progress-bar-striped" role="progressbar" style="width: {{sprog}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                              {% elif sprog >= 75 %}
+                                <div class="progress-bar bg-primary progress-bar-animated progress-bar-striped" role="progressbar" style="width: {{sprog}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                              {% elif sprog >= 50 %}
+                                <div class="progress-bar bg-success progress-bar-animated progress-bar-striped" role="progressbar" style="width: {{sprog}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                              {% elif sprog >= 25 %}
+                                <div class="progress-bar bg-warning progress-bar-animated progress-bar-striped" role="progressbar" style="width: {{sprog}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                              {% else %}
+                                <div class="progress-bar bg-danger progress-bar-animated progress-bar-striped" role="progressbar" style="width: {{sprog}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                              {% endif %}
+
+                              {% endwith %}
+                            {% else %}
+                                <div class="progress-bar bg-danger progress-bar-animated progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            {% endif %}
+                              </div>
+                          </td>
+                          <td> {{all_product.pcost}} </td>
+                          <td> {{all_product.pmrp}} </td>
+                          <td> {{all_product.pdiscount}} % </td>
+                          <td> {{all_product.ppackingdt|date:"d-m-Y"}} </td>
+                          <td> {{all_product.pexpirydt|date:"d-m-Y"}} </td>
+                          
+                        </tr>
+                        {% endfor %}
+                        <!-- <tr>
+                          <td> 2 </td>
+                          <td> Messsy Adam </td>
+                          <td>
+                            <div class="progress">
+                              <div class="progress-bar bg-danger" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                          </td>
+                          <td> $245.30 </td>
+                          <td> July 1, 2015 </td>
+                        </tr> -->
+                        <!-- <tr>
+                          <td> 3 </td>
+                          <td> John Richards </td>
+                          <td>
+                            <div class="progress">
+                              <div class="progress-bar bg-warning" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                          </td>
+                          <td> $138.00 </td>
+                          <td> Apr 12, 2015 </td>
+                        </tr> -->
+                        <!-- <tr>
+                          <td> 4 </td>
+                          <td> Peter Meggik </td>
+                          <td>
+                            <div class="progress">
+                              <div class="progress-bar bg-primary" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                          </td>
+                          <td> $ 77.99 </td>
+                          <td> May 15, 2015 </td>
+                        </tr> -->
+                        <!-- <tr>
+                          <td> 5 </td>
+                          <td> Edward </td>
+                          <td>
+                            <div class="progress">
+                              <div class="progress-bar bg-danger" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                          </td>
+                          <td> $ 160.25 </td>
+                          <td> May 03, 2015 </td>
+                        </tr> -->
+                        <!-- <tr>
+                          <td> 6 </td>
+                          <td> John Doe </td>
+                          <td>
+                            <div class="progress">
+                              <div class="progress-bar bg-info" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                          </td>
+                          <td> $ 123.21 </td>
+                          <td> April 05, 2015 </td>
+                        </tr> -->
+                        <!-- <tr>
+                          <td> 7 </td>
+                          <td> Henry Tom </td>
+                          <td>
+                            <div class="progress">
+                              <div class="progress-bar bg-warning" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                          </td>
+                          <td> $ 150.00 </td>
+                          <td> June 16, 2015 </td>
+                        </tr> -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+          </div>
+      </div>
+
+{% endblock content %}

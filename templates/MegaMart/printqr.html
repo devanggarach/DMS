@@ -1,0 +1,90 @@
+{% extends 'MegaMart/navbar/navigation.html' %}
+{% block content %}
+{% load mathfilters %}
+<div class="main-panel">
+          <div class="content-wrapper">
+            <div class="row">
+			         <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="template-demo">
+                      <div class="row">
+                        <div class="col-md-6">
+                            <b>Print QR Code</b>
+                        </div>
+                        <div class="col-md-6" align="right">
+                            Search <input type="text" name="search" id="">    
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th> No. </th>
+                          <th> Name </th>
+                          <th> Qrcode </th>
+                          <th> Print </th>
+                          <th> Stock </th>
+                          <th> Cost </th>
+                          <th> MRP </th>
+                          <th> Discount</th>
+                          <th> Packing Date</th>
+                          <th> Expiry Date</th>
+                        </tr>
+                      </thead>
+
+                      
+                      <tbody>
+                      	{% for all_product in Tall_products %}
+                        <tr>
+                          <td> {{all_product.pid}} </td>
+                          <td> {{all_product.pname}} </td>
+                          <td> {{all_product.pqrcode}} </td>
+                          <td>
+                            <form action="../printIntoPdf/{{all_product.pid}}" rel="noopener" method="GET">
+                            {% csrf_token %}
+                            <input type="number" name="nval" min="0" step="4" value="{{all_product.pquantity}}" style="width: 54px;" />&nbsp;
+                            <button class="btn btn-primary btn-xs" type="submit">Print</button>
+                          </form>
+                          </td>
+                          <td width="25%">
+                            {{all_product.pquantity}}&nbsp;/&nbsp;{{all_product.pstock}}<!-- <b style="margin: 35%"></b> -->
+                            <div class="progress">
+                          	{% if all_product.pstock != 0 %}
+                              {% with sprog=all_product.pquantity|div:all_product.pstock|mul:100 %}
+                              {% if sprog >= 95 %}
+                                <div class="progress-bar bg-info progress-bar-animated progress-bar-striped" role="progressbar" style="width: {{sprog}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                              {% elif sprog >= 75 %}
+                                <div class="progress-bar bg-primary progress-bar-animated progress-bar-striped" role="progressbar" style="width: {{sprog}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                              {% elif sprog >= 50 %}
+                                <div class="progress-bar bg-success progress-bar-animated progress-bar-striped" role="progressbar" style="width: {{sprog}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                              {% elif sprog >= 25 %}
+                                <div class="progress-bar bg-warning progress-bar-animated progress-bar-striped" role="progressbar" style="width: {{sprog}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                              {% else %}
+                                <div class="progress-bar bg-danger progress-bar-animated progress-bar-striped" role="progressbar" style="width: {{sprog}}%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                              {% endif %}
+
+                              {% endwith %}
+                            {% else %}
+                                <div class="progress-bar bg-danger progress-bar-animated progress-bar-striped" role="progressbar" style="width: 0%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                            {% endif %}
+                              </div>
+                          </td>
+                          <td> {{all_product.pcost}} </td>
+                          <td> {{all_product.pmrp}} </td>
+                          <td> {{all_product.pdiscount}} % </td>
+                          <td> {{all_product.ppackingdt|date:"d-m-Y"}} </td>
+                          <td> {{all_product.pexpirydt|date:"d-m-Y"}} </td>      
+                        </tr>
+                          <div id="modal-div"></div>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+          </div>
+      </div>
+
+{% endblock content %}

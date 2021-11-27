@@ -1,0 +1,125 @@
+
+{% extends 'MegaMart/navbar/navigation.html' %}
+{% block content %}
+{% load mathfilters %}
+<div class="main-panel">
+          <div class="content-wrapper">
+            <div class="row">
+			        <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <form action="../insertInvoiceRecord" method="GET">
+                      
+                      <div class="template-demo">
+                        <div class="row">
+                          <div class="col-md-6">
+                              <b>Invoice</b>&nbsp;&nbsp;&nbsp;<h2 style="float: right;font-weight: bolder;">MEGA MART</h1>
+                          </div> 
+                          <div class="col-md-6" align="right">
+                              <div class="dropdown">
+                                <button class="btn btn-primary dropdown-toggle" type="button"
+                                        id="spfilter" data-toggle="dropdown"> GST Type </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <a class="dropdown-item" href="../showscgst/" style="{{shscgst}}">SGST & CGST</a>
+                                <a class="dropdown-item" href="../showigst/" style="{{shigst}}">IGST</a>
+                                </div>
+                              </div>
+                              &nbsp;&nbsp;
+                              <a href="../clearbill" class="btn btn-primary">Clear</a>&nbsp;&nbsp;
+                              <a href="../additem" class="btn btn-primary">+ Add item</a>
+                          </div>
+                        </div>
+                      </div>
+                      <br>
+                      <div class="row">
+                        <div class="col-md-5">
+                          <table>
+                            <tr>
+                              <td>Customer Name:</td><td><input class="text-sm" type="text" name="cust_nm"></td>
+                            </tr>
+                            <tr>
+                              <td>Mobile No.:</td><td><input type="text" name="cust_mob"></td>
+                            </tr>
+                            <tr>
+                              <td>Email ID:</td><td><input type="text" name="cust_email"></td>
+                            </tr>
+                            <tr>
+                              <td>Address:</td><td><textarea id="" name="cust_addr" cols="21"></textarea></td>
+                            </tr>
+                          </table>
+                        </div>
+                        <div class="col-md-3" style="margin-top: -10px;">
+                          <tr>
+                            <td>City:</td>
+                              <td>
+                                <input type="text" name="cust_cty">
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>State:</td> <td><input type="text" name="cust_st"></td>
+                            </tr>
+                            <tr>
+                              <td>PinCode:</td>
+                                <td>
+                                  <input type="text" name="cust_pcode">
+                                </td>
+                            </tr>
+                        </div>
+                        
+                      </div>
+                      <br>
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th> # </th>
+                            <th> HSNCode </th>
+                            <th> Product Name </th>
+                            <th> Rate </th>
+                            <th> Quantity </th>
+                            <th> Amount </th>
+                            <th> Discount </th>
+                            <th> Total </th>
+                            <th> Delete </th>
+                          </tr>
+                        </thead>
+
+                        
+                        <tbody>
+                          {% for products in pprintBill %}
+                          <tr>
+                              <td>{{products.srno}}</td>
+                              <td>{{products.hsncode}} | {{products.gstrate}}%</td>
+                              <td>{{products.prodid}}&nbsp;{{products.prodname}}</td>
+                              <td><i class="fa fa-inr"></i>{{products.rate}}</td>
+                              <td align="center"><a href="../qtyminus/{{products.prodid}}"><span class="badge badge-light" style="border: 1px solid rgba(204, 203, 203, 0.356);float: left;"><i class="fa fa-minus"></i></span></a>
+                                {{products.qty}}
+                                <a href="../qtyplus/{{products.prodid}}"><span class="badge badge-light" style="border: 1px solid rgba(204, 203, 203, 0.356);float: right;"><i class="fa fa-plus"></i></span></a>
+                              </td>                            
+                              <td><i class="fa fa-inr"></i>{{products.amt}}</td>
+                              <td>{{products.discount}}%</td>
+                              <td><i class="fa fa-inr"></i>{{products.total}}</td>
+                              
+                              <td align="center"><a href="../deleteprod/{{products.prodid}}"><i class="fa fa-trash-alt" style="color:black"></i></a></td>
+                          </tr>
+                          {% endfor %}
+                            <div id="modal-div"></div>
+                            <tr><td colspan="6" style="padding: 0;"><td align="center" style="font-size:small;">SGST Total:</td><td colspan="2" style="padding: 0 15px;"><i class="fa fa-inr"></i>{{sgsttotal}}</td></tr>
+                            <tr><td colspan="6" style="padding: 0;"><td align="center" style="font-size:small;">CGST Total:</td><td colspan="2" style="padding: 0 15px;"><i class="fa fa-inr"></i>{{cgsttotal}}</td></tr>
+                            <tr><td colspan="6" style="padding: 0;"><td align="center" style="font-size:small;">IGST Total:</td><td colspan="2" style="padding: 0 15px;"><i class="fa fa-inr"></i>{{igsttotal}}</td></tr>
+                          <tr><td colspan="6"><td align="center">Grand Total:<br/><span align="center" style="font-size: x-small;">GST Inclusive</span></td><td colspan="2"><i class="fa fa-inr"></i>{{billTotal}}</td></tr>
+                        </tbody>
+                      </table>
+                      <div class="row m-4">
+                        <div class="col-md-6 offset-md-4">
+                          <button class="btn btn-primary" type="submit">Generate Bill</button>&nbsp;&nbsp;
+                          <a href="../printbill" class="btn btn-primary">Print Bill</a>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+          </div>
+      </div>
+
+{% endblock content %}

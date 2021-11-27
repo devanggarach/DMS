@@ -1,0 +1,27 @@
+IP ADDress:
+Host: 119.160.199.72
+
+DB - mysql
+Username: Group-2
+Password: kpatel
+DB Name: group-2
+
+FTP:
+Username: Group-2
+password: kpatel
+
+Domain url
+http://119.160.199.72/Group-2/index.html
+
+
+https://www.youtube.com/watch?v=G1R5H6pnOyc
+
+
+
+Rename the "server.php" file in root directory, in "index.php"
+Move your .htaccess from public folder to root directory
+Make your directory accessible to Apache2 (set correct file/folder permissions).
+
+
+
+

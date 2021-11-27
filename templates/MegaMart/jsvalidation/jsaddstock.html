@@ -1,0 +1,229 @@
+<style type="text/css">
+#ssicostmesg,#ssimrpmesg,#ssidiscountmesg0,#ssiquantitymsg,#ssiexpirydtmsg,#ssipackingdtmsg{color: red;
+    font-size: 12px;
+  }
+</style>
+
+
+<script type="text/javascript">
+var GsubmitSavestock = {iname:1,icost:1,imrp:1,idiscount:1,ipackingdt:1,iexpirydt:1,iquantity:1};
+
+function ssCheckName() {
+  var vname = document.getElementById("ssiname");
+  var sname = vname.value.split(" ");
+  var pname="";
+  for (s in sname) {
+    pname +=sname[s].charAt(0).toUpperCase()+sname[s].slice(1)+" ";
+  }
+  vname.value = pname.trim();
+  GsubmitSavestock["iname"] = 1;
+}
+
+
+function ssCheckCost() {
+  var vicost = document.getElementById("ssicost").value;
+  if (!isNaN(vicost)) {
+    if (vicost<0 || (vicost.charAt(0))=="-"){
+      ssicostmesg.innerHTML ="Enter a positive number !..." ;
+      GsubmitSavestock["icost"] = 0;
+    }else{
+      ssicostmesg.innerHTML ="" ;
+      GsubmitSavestock["icost"] = 1;
+    }
+  }else{
+    ssicostmesg.innerHTML ="Please provide valid input for Cost !..." ;
+    GsubmitSavestock["icost"] = 0;
+  }
+}
+
+
+function ssCheckMRP() {
+  var vmrp = document.getElementById("ssimrp").value;
+  if (!isNaN(vmrp)) {
+    if (vmrp<0 || (vmrp.charAt(0))=="-"){
+      ssimrpmesg.innerHTML ="Enter a positive number !..." ;
+      GsubmitSavestock["imrp"] = 0;
+    }else{
+      ssimrpmesg.innerHTML ="" ;
+      GsubmitSavestock["imrp"] = 1;
+    }
+  }else{
+    ssimrpmesg.innerHTML ="Please provide valid input for MRP. !..." ;
+    GsubmitSavestock["imrp"] = 0;
+  }
+}
+
+
+function ssCheckDiscount() {
+  var vcost = document.getElementById("ssicost").value;
+  var vselling = document.getElementById("ssimrp").value;
+  var vdiscount = document.getElementById("ssidiscount").value;
+  var pdiscount = (vselling - ((vselling * vdiscount) / 100)).toFixed(2);
+  var profit =(pdiscount - vcost).toFixed(2);
+
+  var temp=false;
+  if (!isNaN(vdiscount)) {
+  if (vdiscount<0 || (vdiscount.charAt(0))=="-"){
+    ssidiscountmesg0.innerHTML ="Enter a positive number !..." ;
+    GsubmitSavestock["idiscount"] = 0;
+    ssidiscountmesg.style.display = "none";
+  }else{
+    ssidiscountmesg0.innerHTML ="";
+    GsubmitSavestock["idiscount"] = 1;
+    if (vdiscount>100) {
+      ssidiscountmesg0.innerHTML ="Enter a Discount 0 to 100 ." ;
+      GsubmitSaveproduct["idiscount"] = 0;
+      ssidiscountmesg.style.display = "none";
+    }else{
+      temp=true;
+    }
+  }
+  }else{
+    ssidiscountmesg0.innerHTML ="Please provide valid input for MRP. !..." ;
+    GsubmitSavestock["idiscount"] = 0;
+    ssidiscountmesg.style.display = "none";
+  }
+
+  if (temp){
+    ssidiscountmesg.style.display = "block";
+  if (parseFloat(pdiscount) > parseFloat(vcost)){
+    ssidiscountmesg1.style.cssText = "color: green;";
+    ssidiscountmesg1.innerHTML = pdiscount;
+
+    ssidiscountmesg2.style.cssText = "background-color: green; color: #D4EFDF";
+    ssidiscountmesg2.innerHTML = "&ensp;<i class='far fa-smile'></i>&ensp; Profit: &ensp; "+profit+"&ensp;";
+  }else if(parseFloat(pdiscount) == parseFloat(vcost)){
+    ssidiscountmesg1.style.cssText = "color: orange;";
+    ssidiscountmesg1.innerHTML = pdiscount;
+
+    ssidiscountmesg2.style.cssText = "background-color: orange; color: #FDEBD0";
+    ssidiscountmesg2.innerHTML = "&ensp;<i class='far fa-meh'></i>&ensp; Cost: &ensp; "+profit+"&ensp;";
+  }else{
+    ssidiscountmesg1.style.cssText = "color: red;";
+    ssidiscountmesg1.innerHTML = pdiscount;
+
+    ssidiscountmesg2.style.cssText = "background-color: red; color: #FADBD8";
+    ssidiscountmesg2.innerHTML = "&ensp;<i class='far fa-frown'></i>&ensp; Loss: &ensp;"+profit+"&ensp;";
+  }}
+}
+
+
+function ssCheckPackingdt() {
+  var vpackingdt = document.getElementById("ssipackingdt").value;
+  var valid = validDate(vpackingdt);
+  if (valid == "") {
+    GsubmitSavestock["ipackingdt"] = 1;
+  }else{
+    GsubmitSavestock["ipackingdt"] = 0;
+  }
+  ssipackingdtmsg.innerHTML = valid;
+}
+
+
+function ssCheckExpirydt() {
+  var vexpirydt = document.getElementById("ssiexpirydt").value;
+  var valid = validDate(vexpirydt);
+  if (valid == "") {
+    var sdate = vexpirydt.split('-');
+    var exdate = new Date(sdate[2],sdate[1]-1,sdate[0]);
+    // alert(exdate<Gtoday);
+    if (exdate<=Gtoday) {
+      // alert(1);
+      ssiexpirydtmsg.innerHTML = "Product is alreay expired";
+      GsubmitSavestock["iexpirydt"] = 0;
+    }else{
+      // alert(2);
+      ssiexpirydtmsg.innerHTML = valid;
+      GsubmitSavestock["iexpirydt"] = 1;
+    }
+    
+  }else{
+    // alert(3);
+    GsubmitSavestock["iexpirydt"] = 0;
+    ssiexpirydtmsg.innerHTML = valid;
+  }
+
+}
+
+
+function ssCheckQuantity() {
+  var vquantity = document.getElementById("ssiquantity").value;
+  if (!isNaN(vquantity)) {
+    if (vquantity<=0 || (vquantity.charAt(0))=="-"){
+      ssiquantitymsg.innerHTML ="Enter a Positive number !..." ;
+      GsubmitSavestock["iquantity"] = 0;
+    }else{
+      if (!vquantity.includes(".")) {
+        ssiquantitymsg.innerHTML ="" ;
+        GsubmitSavestock["iquantity"] = 1;
+      }else{
+        ssiquantitymsg.innerHTML ="Enter a Natural number !...";
+        GsubmitSavestock["iquantity"] = 0;
+      }
+    }
+  }else{
+    ssiquantitymsg.innerHTML ="Please provide valid input for Quantity !...";
+    GsubmitSavestock["iquantity"] = 0;
+  }
+}
+
+
+function cancelSavestock() {
+  ssicostmesg.innerHTML ="";
+  ssimrpmesg.innerHTML ="";
+  ssicostmesg.innerHTML ="";
+  sssubmit.style.display = "none";
+  ssidiscountmesg0.innerHTML ="";
+  ssidiscountmesg1.innerHTML ="";
+  ssidiscountmesg2.innerHTML ="";
+  ssipackingdtmsg.innerHTML ="";
+  ssiexpirydtmsg.innerHTML ="";
+  ssiquantitymsg.innerHTML ="";
+  document.getElementById("sssubmit").reset();
+  for (i in GsubmitSavestock) {
+    GsubmitSavestock[i] = 0;
+  }
+}
+
+
+function submitSavestock() {
+  var submit=0;
+  if(GproductListId[Gindex][0]==(document.getElementById("ssiname").value) && 
+      GproductListId[Gindex][2]==(parseFloat(document.getElementById("ssicost").value)) && 
+      GproductListId[Gindex][3]==(parseFloat(document.getElementById("ssimrp").value)) && 
+      GproductListId[Gindex][4]==(parseFloat(document.getElementById("ssidiscount").value)) && 
+      GproductListId[Gindex][5]==(document.getElementById("ssipackingdt").value) && 
+      GproductListId[Gindex][6]==(document.getElementById("ssiexpirydt").value))
+  {
+    if (GproductListId[Gindex][7]==(document.getElementById("ssiquantity").value) || 
+        1>(document.getElementById("ssiquantity").value)) {
+      // alert('not change');
+      cancelSavestock();
+      return false;
+    }else{
+      if (GsubmitSavestock['iquantity']==1) {
+        // alert('quntity change');
+        return true;
+      }else{
+         return false; //ok 
+      }
+    }
+  }else{
+    // alert('change');
+    for (i in GsubmitSavestock) {
+    submit += GsubmitSavestock[i];
+    }
+    // alert(submit);
+    if (submit == 7) {
+      // alert('submit');
+      return true;
+      cancelSavestock();
+      
+    }else{
+      return false;
+    }
+  }  
+}
+
+
+</script>

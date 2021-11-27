@@ -1,0 +1,183 @@
+
+{% extends 'MegaMart/navbar/navigation.html' %}
+
+{% block content %}
+
+
+<!-- Js validation include -->
+{% include 'MegaMart/jsvalidation/jsaddproduct.html' %}
+{% include 'MegaMart/jsvalidation/jsaddstock.html' %}
+
+<script type="text/javascript">
+  if ('{{urlback}}') {
+    // alert('back');
+    location.href = '../addproduct';
+  }
+</script>
+ 
+
+
+
+<div class="main-panel">
+          <div class="content-wrapper">
+            <div class="row">
+              <div class="col-md-6 d-flex align-items-stretch grid-margin">
+                <div class="row flex-grow">
+                  <div class="col-12">
+                    <div class="card">
+                      <div class="card-body">
+                        <h4 class="card-title">+ Add Product</h4>
+                        <!-- <p class="card-description"> Basic form layout </p> -->
+                        <form action="../saveproduct" method="get" class="forms-sample" onsubmit="return submitSaveproduct()" >
+                        	{% csrf_token %}
+                          <div class="form-group autocomplete">
+                            <label for="">Name</label>
+                            
+                            <input type="text" name="name" onfocusout="spCheckName()" class="form-control" id="spiname" placeholder="product name" value="" autocomplete="off">
+                          </div>
+                          <div class="form-group autocompletehsn">
+
+                            
+                            <label for="">HSN Code&emsp;<a href="#ihsninfo" id="ihsncardlink" style="display: none;"><i class="fa fa-info-circle" aria-hidden="true"></i></a></label>
+
+                            <input type="text" name="gst" id="ispgst" hidden="true">
+
+                            {% include 'MegaMart/jsvalidation/jsssautocomplatehsn.html' %}
+                            
+                          </div>
+                          
+                          <div class="form-group">
+                            <label for="">Cost</label>
+                            <input type="text" name="cost" class="form-control" id="spicost" placeholder="00.0" oninput="spCheckCost();spCheckDiscount();" onfocusout="this.value=this.value.trim()" autocomplete="off">
+                            <p id="spicostmesg" class="card-description" ></p>
+                          </div>
+                          <div class="form-group">
+                            <label for="">MRP.</label>
+                            <input type="text" name="mrp" class="form-control" id="spimrp" placeholder="00.0" oninput="spCheckMRP();spCheckDiscount();" onfocusout="this.value=this.value.trim()" autocomplete="off">
+                            <p id="spimrpmesg" class="card-description"></p>
+                          </div>
+                          <div class="form-group">
+                            <label for="">Selling Price</label>
+                            <input type="text" name="sellingprice" class="form-control" id="spisellingprice" placeholder="00.0" oninput="spCheckSellingPrice();spCheckDiscount();" onfocusout="this.value=this.value.trim()" autocomplete="off">
+                            <p id="spisellingpricemesg" class="card-description" ></p>
+                           
+                          </div>
+                          <!-- https://byjus.com/discount-formula/ -->
+                          <div class="form-group">
+                            <label for="">Discount</label>
+                            <input type="text" name="discount" readonly="true" value="0" class="form-control" id="spidiscount" placeholder="00 %" oninput="spCheckDiscount()" onfocusout="this.value=this.value.trim()" onClick="this.select();"  autocomplete="off" >
+                          </div>
+                          <p id="spidiscountmesg0" class="card-description"></p>
+                          <p id="spidiscountmesg" class="card-description" style="display :none; color: #909497">GST: &#8377; 
+                            <b id="spidiscountmesg1"></b> &emsp;
+                            <b id="spidiscountmesg2"></b></p>
+                          
+                          <div class="form-group">
+                            <label for="">Packing date</label>
+                            <input type="text" name="packingdt" class="form-control" id="spipackingdt" placeholder="dd-mm-yyyy" oninput="spCheckPackingdt()" onfocusout="this.value=this.value.trim()" autocomplete="off">
+                            <p id="spipackingdtmsg" class="card-description"></p>
+                          </div>
+                          <div class="form-group">
+                            <label for="">Expiry date</label>
+                            <input type="text" name="expirydt" class="form-control" id="spiexpirydt" placeholder="dd-mm-yyyy" oninput="spCheckExpirydt()" onfocusout="this.value=this.value.trim()" autocomplete="off">
+                            <p id="spiexpirydtmsg" class="card-description"></p>
+                          </div>
+                          <div class="form-group">
+                            <label for="">Quantity</label>
+                            <input type="text" name="quantity" class="form-control" id="spiquantity" placeholder="000" oninput="spCheckQuantity()" onfocusout="this.value=this.value.trim()"  autocomplete="off">
+                          </div>
+                          <p id="spiquantitymsg" class="card-description"></p>
+                          <button type="submit" class="btn btn-success mr-2" >Save</button>
+                          <button type="reset" class="btn btn-light" onclick="cancelSaveproduct()">
+                          Cancel</button>
+                          <p id="spisubmitmsg" class="card-description"></p>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- update stock -->
+              <div class="col-md-6 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">+ Add Stock</h4>
+                    {% include 'MegaMart/jsvalidation/jsssautocomplate.html' %}
+                    <p class="card-description"><hr></p>
+                    <form action="../saveproduct" method="get"  id="sssubmit"class="forms-sample" onsubmit="return submitSavestock()" style="display: none;">
+                          {% csrf_token %}
+                          <div class="form-group">
+                            <label for="">Name</label>
+                            <input type="text" readonly="" name="name" onfocusout="ssCheckName()" onClick="this.select();" onfocusout="this.value=this.value.trim()" class="form-control" id="ssiname" placeholder="product name" value="" autocomplete="off">
+                          </div>
+                          <div class="form-group">
+                            <label for="">HSN Code</label>
+                            <input type="text" readonly="" name="hsncode" onClick="this.select();" onfocusout="this.value=this.value.trim()" class="form-control" id="ssihsncode" placeholder="product name" value="" autocomplete="off">
+                          </div>
+                          <div class="form-group">
+                            <label for="">Cost</label>
+                            <input type="text" name="cost" class="form-control" id="ssicost" placeholder="00.0" oninput="ssCheckCost();ssCheckDiscount();" onClick="this.select();" onfocusout="this.value=this.value.trim()" autocomplete="off">
+                            <p id="ssicostmesg" class="card-description" ></p>
+                          </div>
+                          <div class="form-group">
+                            <label for="">MRP.</label>
+                            <input type="text" name="mrp" class="form-control" id="ssimrp" placeholder="00.0" oninput="ssCheckMRP();ssCheckDiscount();" onfocusout="this.value=this.value.trim()" onClick="this.select();" autocomplete="off">
+                            <p id="ssimrpmesg" class="card-description"></p>
+                          </div>
+                          <div class="form-group">
+                            <label for="">Discount</label>
+                            <input type="text" name="discount" class="form-control" id="ssidiscount" placeholder="00 %" oninput="ssCheckDiscount()" onfocusout="this.value=this.value.trim()" onClick="this.select();" autocomplete="off" >
+                          </div>
+                          <p id="ssidiscountmesg0" class="card-description"></p>
+                          <p id="ssidiscountmesg" class="card-description" style="display :none; color: #909497">Selling price: &#8377; 
+                            <b id="ssidiscountmesg1"></b> &emsp;
+                            <b id="ssidiscountmesg2"></b></p>
+                          
+                          <div class="form-group">
+                            <label for="">Packing date</label>
+                            <input type="text" name="packingdt" class="form-control" id="ssipackingdt" placeholder="dd-mm-yyyy" oninput="ssCheckPackingdt()" onfocusout="this.value=this.value.trim()" onClick="this.select();" autocomplete="off">
+                            <p id="ssipackingdtmsg" class="card-description"></p>
+                          </div>
+                          <div class="form-group">
+                            <label for="">Expiry date</label>
+                            <input type="text" name="expirydt" class="form-control" id="ssiexpirydt" placeholder="dd-mm-yyyy" oninput="ssCheckExpirydt()" onClick="this.select();" onfocusout="this.value=this.value.trim()" autocomplete="off">
+                            <p id="ssiexpirydtmsg" class="card-description"></p>
+                          </div>
+                          <div class="form-group">
+                            <label for="">Quantity</label>
+                            <input type="text" name="quantity" class="form-control" id="ssiquantity" placeholder="000" oninput="ssCheckQuantity()" onfocusout="this.value=this.value.trim()" onClick="this.select();"  autocomplete="off">
+                          </div>
+                          <p id="ssiquantitymsg" class="card-description"></p>
+                          <button type="submit" class="btn btn-success mr-2" >Save</button>
+                          <button type="reset" class="btn btn-light" onclick="cancelSavestock()">Cancel</button>
+                        </form>
+                  </div>
+                </div>
+              </div>
+
+              <div id="ihsninfo" style="display: none;" class="col-md-12 grid-margin stretch-card">
+                <div class="card" style="background-color: #e2eafc; ">
+                  <div class="card-body">
+                    <h3 class="card-title"  id="ihsnheader">HSN Code</h3>
+                    <!-- <p id="ihsngst" class="card-description">GST</p> -->
+                    <blockquote class="blockquote" style="background-color: #ccdbfd;">
+                      <p id="ihsngst" class="mb-0 ">CGST: 0.0%  SGST: 0.0%  IGST: 0.0%</p>
+                    </blockquote>
+                  </div>
+                  <div class="card-body">
+                    <blockquote class="blockquote blockquote-primary">
+                      <p id="ihsndescription">Discription .............</p>
+                      <a href=""><footer class="blockquote-footer">&nbsp;<i class="fa fa-info-circle" aria-hidden="true"></i>&emsp;GST information
+                        <!-- <cite title="Source Title">Source Title</cite> -->
+                      </footer></a>
+                    </blockquote>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+  </div>
+
+{% endblock content %}
